@@ -1,0 +1,9 @@
+<library path="kushagrabot_hardware">
+  <class name="kushagrabot_hardware/KushagraBotSystemHardware"
+         type="kushagrabot_hardware::KushagraBotSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for KushagraBot differential drive base.
+    </description>
+  </class>
+</library>

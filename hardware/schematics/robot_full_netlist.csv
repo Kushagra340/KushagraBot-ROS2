@@ -1,0 +1,31 @@
+Source Component,Source Pin,Destination Component,Destination Pin,Signal/Voltage Type,Notes
+POWER SUPPLY,+5V (Output),ESP32,VIN (5V In),5V Power,Main 5V power bus
+POWER SUPPLY,+5V (Output),DRV8833,VM (Motor Power),5V Power,Main motor power
+POWER SUPPLY,GND,ESP32,GND,Ground,Common Ground
+POWER SUPPLY,GND,DRV8833,GND,Ground,Common Ground
+POWER SUPPLY,GND,VL53L5CX (ToF),GND,Ground,Common Ground
+POWER SUPPLY,GND,MPU6050,GND,Ground,Common Ground
+POWER SUPPLY,GND,Left Motor,Encoder GND,Ground,Common Ground
+POWER SUPPLY,GND,Right Motor,Encoder GND,Ground,Common Ground
+ESP32,3.3V (Output),VL53L5CX (ToF),VIN,3.3V Power,3.3V power
+ESP32,3.3V (Output),MPU6050,VCC,3.3V Power,Powers MPU logic
+ESP32,3.3V (Output),Left Motor,Encoder VCC,3.3V Power,Powers Left Encoder
+ESP32,3.3V (Output),Right Motor,Encoder VCC,3.3V Power,Powers Right Encoder
+ESP32,Pin 21,MPU6050,SDA,I2C Data,Shared I2C Data
+ESP32,Pin 21,VL53L5CX (ToF),SDA,I2C Data,Shared I2C Data
+ESP32,Pin 22,MPU6050,SCL,I2C Clock,Shared I2C Clock
+ESP32,Pin 22,VL53L5CX (ToF),SCL,I2C Clock,Shared I2C Clock
+ESP32,Pin 18,VL53L5CX (ToF),LPn / EN,Digital Logic,Low Power / Enable
+ESP32,Pin 19,VL53L5CX (ToF),INT,Digital Signal,Data Ready Interrupt (Recommended)
+ESP32,Pin 26,DRV8833,IN1,PWM,Left Motor Forward
+ESP32,Pin 25,DRV8833,IN2,PWM,Left Motor Reverse
+ESP32,Pin 14,DRV8833,IN3,PWM,Right Motor Forward
+ESP32,Pin 27,DRV8833,IN4,PWM,Right Motor Reverse
+ESP32,Pin 33,Left Motor,Encoder OUT A,Digital Signal,Left Encoder Ticks
+ESP32,Pin 34,Left Motor,Encoder OUT B,Digital Signal,Left Encoder Ticks
+ESP32,Pin 32,Right Motor,Encoder OUT A,Digital Signal,Right Encoder Ticks
+ESP32,Pin 35,Right Motor,Encoder OUT B,Digital Signal,Right Encoder Ticks
+DRV8833,OUT1,Left Motor,Motor Power (+),High Current,Motor Drive
+DRV8833,OUT2,Left Motor,Motor Power (-),High Current,Motor Drive
+DRV8833,OUT3,Right Motor,Motor Power (+),High Current,Motor Drive
+DRV8833,OUT4,Right Motor,Motor Power (-),High Current,Motor Drive

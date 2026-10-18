@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<robot name="kushagrabot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include material colors and gazebo plugins -->
+  <xacro:include filename="materials.xacro" />
+  <xacro:include filename="kushagrabot_gazebo.xacro" />
+
+  <!-- Define robot parameters -->
+  <xacro:property name="body_mass" value="0.7" /> <!-- 700g -->
+  <xacro:property name="body_length" value="0.2" />
+  <xacro:property name="body_width" value="0.13" />
+  <xacro:property name="body_height" value="0.06" />
+
+  <xacro:property name="wheel_mass" value="0.05" /> <!-- 50g -->
+  <xacro:property name="wheel_radius" value="0.017" />
+  <xacro:property name="wheel_thickness" value="0.006" />
+  <!-- Wheel y-position: 119mm / 2 = 59.5mm -->
+  <xacro:property name="wheel_y_offset" value="0.0595" />
+  <!-- Wheels are at back -->
+  <xacro:property name="wheel_x_offset" value="-0.05" />
+  <!-- Wheels geometric center to achieve 10mm ground clearance -->
+  <!-- ground = body_bottom (-0.03) - clearance (0.01) = -0.04 -->
+  <!-- wheel_z = ground (-0.04) + wheel_radius (0.017) = -0.023 -->
+  <xacro:property name="wheel_z_offset" value="-0.023" />
+
+  <xacro:property name="castor_mass" value="0.05" />
+  <xacro:property name="castor_radius" value="0.005" /> <!-- Diameter is 10mm -->
+  <!-- Castor is at front -->
+  <xacro:property name="castor_x_offset" value="0.05" />
+  <!-- Castor z-position to touch the ground (-0.04 + 0.005 = -0.035) -->
+  <xacro:property name="castor_z_offset" value="-0.035" />
+
+  <!-- Ground offset so base_footprint is on the ground based on wheels -->
+  <!-- ground = -0.04 relative to base_link center. So base_link is 0.04 above footprint -->
+  <xacro:property name="base_z_offset" value="0.04" />
+
+  <!-- Inertia macros -->
+  <xacro:macro name="box_inertia" params="m x y z">
+    <inertial>
+      <mass value="${m}" />
+      <inertia ixx="${(1/12) * m * (y*y + z*z)}" ixy="0.0" ixz="0.0"
+               iyy="${(1/12) * m * (x*x + z*z)}" iyz="0.0"
+               izz="${(1/12) * m * (x*x + y*y)}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <mass value="${m}" />
+      <inertia ixx="${(1/12) * m * (3*r*r + h*h)}" ixy="0.0" ixz="0.0"
+               iyy="${(1/12) * m * (3*r*r + h*h)}" iyz="0.0"
+               izz="${(1/2) * m * r*r}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertial>
+      <mass value="${m}" />
+      <inertia ixx="${(2/5) * m * r*r}" ixy="0.0" ixz="0.0"
+               iyy="${(2/5) * m * r*r}" iyz="0.0"
+               izz="${(2/5) * m * r*r}" />
+    </inertial>
+  </xacro:macro>
+
+  <!-- BASE LINK -->
+  <link name="base_footprint" />
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${base_z_offset}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertia m="${body_mass}" x="${body_length}" y="${body_width}" z="${body_height}"/>
+  </link>
+
+  <!-- LEFT WHEEL -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="${wheel_x_offset} ${wheel_y_offset} ${wheel_z_offset}" rpy="-${pi/2} 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <!-- Requirement: keep collision geometry of wheels as a sphere -->
+      <geometry>
+        <sphere radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_thickness}"/>
+  </link>
+
+  <!-- RIGHT WHEEL -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="${wheel_x_offset} ${-wheel_y_offset} ${wheel_z_offset}" rpy="${pi/2} 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <!-- Requirement: keep collision geometry of wheels as a sphere -->
+      <geometry>
+        <sphere radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_thickness}"/>
+  </link>
+
+  <!-- CASTOR WHEEL -->
+  <joint name="castor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="castor_wheel"/>
+    <origin xyz="${castor_x_offset} 0.0 ${castor_z_offset}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="castor_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <!-- Castor geometry is sphere as per its type -->
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+      </geometry>
+    </collision>
+    <xacro:sphere_inertia m="${castor_mass}" r="${castor_radius}"/>
+  </link>
+
+  <!-- TOF SENSORS -->
+  <xacro:property name="tof_mass" value="0.005" />
+  <xacro:property name="tof_x" value="0.01" />
+  <xacro:property name="tof_y" value="0.01" />
+  <xacro:property name="tof_z" value="0.005" />
+  
+  <!-- Left ToF Sensor (+12.5 deg = 0.218 rad) -->
+  <joint name="left_tof_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_tof_link"/>
+    <origin xyz="${body_length/2} 0.04 ${body_height/2 + 0.01}" rpy="0 0 0.218"/>
+  </joint>
+
+  <link name="left_tof_link">
+    <visual>
+      <geometry>
+        <box size="${tof_x} ${tof_y} ${tof_z}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tof_x} ${tof_y} ${tof_z}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertia m="${tof_mass}" x="${tof_x}" y="${tof_y}" z="${tof_z}"/>
+  </link>
+
+  <!-- Right ToF Sensor (-12.5 deg = -0.218 rad) -->
+  <joint name="right_tof_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_tof_link"/>
+    <origin xyz="${body_length/2} -0.04 ${body_height/2 + 0.01}" rpy="0 0 -0.218"/>
+  </joint>
+
+  <link name="right_tof_link">
+    <visual>
+      <geometry>
+        <box size="${tof_x} ${tof_y} ${tof_z}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tof_x} ${tof_y} ${tof_z}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertia m="${tof_mass}" x="${tof_x}" y="${tof_y}" z="${tof_z}"/>
+  </link>
+
+  <!-- LIDAR SENSOR -->
+  <xacro:property name="lidar_mass" value="0.1" />
+  <xacro:property name="lidar_radius" value="0.035" />
+  <xacro:property name="lidar_height" value="0.03" />
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 ${body_height/2 + lidar_height/2}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="lidar_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+    </collision>
+    <xacro:cylinder_inertia m="${lidar_mass}" r="${lidar_radius}" h="${lidar_height}"/>
+  </link>
+
+  <!-- ROS2 CONTROL -->
+  <ros2_control name="KushagraBotSystemHardware" type="system">
+    <hardware>
+      <plugin>kushagrabot_hardware/KushagraBotSystemHardware</plugin>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- IMU LINK -->
+  <link name="imu_link">
+    <!-- Visual/Collision not strictly necessary, it's just for tf -->
+  </link>
+  
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

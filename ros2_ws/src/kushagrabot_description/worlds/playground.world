@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="playground">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    
+    <!-- Obstacle 1: Red Box in front -->
+    <model name="obstacle_red">
+      <pose>1 0 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.2 0.5 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 0.5 1</size></box></geometry>
+          <material><script><name>Gazebo/Red</name></script></material>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- Obstacle 2: Green Box to the left -->
+    <model name="obstacle_green">
+      <pose>0.5 1 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.5 0.2 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.2 1</size></box></geometry>
+          <material><script><name>Gazebo/Green</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Obstacle 3: Blue Box to the right -->
+    <model name="obstacle_blue">
+      <pose>0.5 -1 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.5 0.2 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.2 1</size></box></geometry>
+          <material><script><name>Gazebo/Blue</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wall: North -->
+    <model name="wall_north">
+      <pose>2.5 0 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5.2 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.2 5.2 1</size></box></geometry>
+        <material><script><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- Wall: South -->
+    <model name="wall_south">
+      <pose>-2.5 0 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5.2 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.2 5.2 1</size></box></geometry>
+        <material><script><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- Wall: East -->
+    <model name="wall_east">
+      <pose>0 2.5 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>5 0.2 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>5 0.2 1</size></box></geometry>
+        <material><script><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+    <!-- Wall: West -->
+    <model name="wall_west">
+      <pose>0 -2.5 0.5 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>5 0.2 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>5 0.2 1</size></box></geometry>
+        <material><script><name>Gazebo/Grey</name></script></material></visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

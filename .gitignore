@@ -1,0 +1,28 @@
+# Colcon build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+ros2_ws/.colcon/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PlatformIO build artifacts
+firmware/.pio/
+firmware/.vscode/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.bak
+
+# Large media files — upload to GitHub Releases instead
+*.mp4
+*.mov
+*.avi
